@@ -1,127 +1,154 @@
-🌊 Wave - Sistema de Streaming Musical
-https://img.shields.io/badge/Java-17-orange
-https://img.shields.io/badge/Spring%2520Boot-3.5.6-brightgreen
-https://img.shields.io/badge/React-18-blue
-https://img.shields.io/badge/PostgreSQL-15-blue
+Wave - Plataforma de Streaming Musical
 
-Sistema completo de streaming musical desenvolvido como projeto acadêmico.
+Wave é um sistema completo de streaming musical desenvolvido como projeto acadêmico, composto por um backend em Spring Boot e um frontend em React. A aplicação oferece autenticação segura, gerenciamento de usuários e interface moderna com layout responsivo.
 
-🎯 Funcionalidades
-✅ Implementadas
-Autenticação JWT - Login seguro com tokens
+Sumário
 
-CRUD de Usuários - Cadastro, edição e exclusão
+Visão Geral
 
-Header Dinâmico - Interface adaptável ao login
+Tecnologias Utilizadas
 
-Design Responsivo - Interface moderna com Tailwind CSS
+Funcionalidades
 
-API REST - Backend completo com Spring Boot
+Arquitetura do Projeto
 
-🔜 Futuras Implementações
-API de transmissões ao vivo
+Instalação e Execução
+
+Endpoints Principais
+
+Contribuição
+
+Autor
+
+Visão Geral
+
+O Wave foi projetado para simular uma experiência completa de streaming musical. O projeto utiliza padrões modernos de desenvolvimento, integração entre serviços e autenticação baseada em JWT, garantindo segurança e escalabilidade.
+
+Tecnologias Utilizadas
+Backend
+
+Java 17
+
+Spring Boot 3.5+
+
+Spring Security
+
+JWT (JSON Web Token)
+
+PostgreSQL
+
+H2 Database (ambiente de desenvolvimento)
+
+Maven
+
+Frontend
+
+React 18
+
+Vite
+
+Tailwind CSS
+
+Axios
+
+React Router
+
+Funcionalidades
+Implementadas
+
+Autenticação via JWT
+
+Cadastro e login de usuários
+
+CRUD completo de usuários
+
+Header dinâmico baseado no estado de autenticação
+
+Interface responsiva desenvolvida em Tailwind CSS
+
+API REST documentada via SpringDoc
+
+Previstas
 
 Sistema de playlists
 
-Perfis individuais
+Upload e gerenciamento de músicas
 
-Upload de músicas
+Perfis personalizados
 
-🛠️ Tecnologias
-Backend
-Java 17 - Linguagem principal
+Transmissões ao vivo
 
-Spring Boot 3.5.6 - Framework backend
+Arquitetura do Projeto
+Wave-MVP/
+├── backend/                 API REST em Spring Boot
+│   ├── controller/          Endpoints
+│   ├── service/             Regras de negócio
+│   ├── model/               Entidades JPA
+│   ├── repository/          Acesso ao banco
+│   ├── security/            Autenticação e JWT
+│   └── dto/                 Objetos de transferência
+│
+└── frontend/                Aplicação React
+    ├── components/          Componentes reutilizáveis
+    ├── pages/               Páginas da aplicação
+    ├── services/            Integração com API
+    └── data/                Dados estáticos
 
-Spring Security - Autenticação e autorização
+Instalação e Execução
+Requisitos
 
-JWT - Tokens de acesso
-
-PostgreSQL - Banco de dados produção
-
-H2 Database - Banco de dados desenvolvimento
-
-Maven - Gerenciamento de dependências
-
-Frontend
-React 18 - Biblioteca frontend
-
-Vite - Build tool e dev server
-
-Tailwind CSS - Framework CSS
-
-Axios - Cliente HTTP
-
-React Router - Roteamento
-
-🚀 Como Executar
-Pré-requisitos
 Java 17+
 
 Node.js 18+
 
-PostgreSQL (opcional para desenvolvimento)
+PostgreSQL (apenas para ambiente de produção)
 
-Backend
-
+Backend (Spring Boot)
 cd backend
 ./mvnw spring-boot:run
 
-API disponível em: http://localhost:8080
 
-Frontend
+API disponível em:
+http://localhost:8080
 
+Frontend (React + Vite)
 cd frontend
 npm install
 npm run dev
 
-Frontend disponível em: http://localhost:5173
 
-📡 Endpoints da API
+Aplicação disponível em:
+http://localhost:5173
+
+Endpoints Principais
 Autenticação
-POST /login - Autenticar usuário
 
-POST /usuarios - Criar novo usuário
+POST /login – Autentica usuário
+
+POST /usuarios – Cadastra novo usuário
 
 Usuários
-GET /usuarios - Listar usuários
 
-GET /usuarios/{id} - Buscar usuário por ID
+GET /usuarios – Lista todos os usuários
 
-PUT /usuarios/{id} - Atualizar usuário
+GET /usuarios/{id} – Detalhes de um usuário
 
-DELETE /usuarios/{id} - Excluir usuário
+PUT /usuarios/{id} – Atualiza usuário
 
-🗃️ Estrutura do Projeto
+DELETE /usuarios/{id} – Remove usuário (somente ADMIN)
 
-Wave-MVP/
-├── backend/                 # API Spring Boot
-│   ├── src/
-│   │   └── main/java/br/com/fatec/wave/
-│   │       ├── controller/     # Endpoints REST
-│   │       ├── service/        # Lógica de negócio
-│   │       ├── repository/     # Camada de dados
-│   │       ├── model/          # Entidades JPA
-│   │       ├── security/       # Configurações de segurança
-│   │       └── dto/            # Objetos de transferência
-│   └── pom.xml
-├── frontend/                # Aplicação React
-│   ├── src/
-│   │   ├── components/      # Componentes reutilizáveis
-│   │   ├── pages/           # Páginas da aplicação
-│   │   ├── services/        # Integração com API
-│   │   └── data/            # Dados estáticos
-│   └── package.json
-└── README.md
+Contribuição
 
-👥 Autores
-João Victor - joaolamin-dev
+Contribuições são bem-vindas. Para colaborar:
 
-Desenvolvimento full-stack
+Crie um fork
 
-Arquitetura do sistema
+Crie sua feature branch
 
-Integração frontend/backend
+Envie seu pull request
 
-📄 Licença
-Este projeto foi desenvolvido para fins acadêmicos na FATEC Mauá.
+Autor
+
+João Victor (joaolamin-dev)
+Desenvolvimento Full Stack
+Arquitetura e integração dos módulos frontend e backend
