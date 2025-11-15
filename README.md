@@ -1,6 +1,6 @@
-Wave - Plataforma de Streaming Musical
+Wave — Plataforma de Streaming Musical
 
-Wave é um sistema completo de streaming musical desenvolvido como projeto acadêmico, composto por um backend em Spring Boot e um frontend em React. A aplicação oferece autenticação segura, gerenciamento de usuários e interface moderna com layout responsivo.
+<a name="sumario"></a>
 
 Sumário
 
@@ -14,36 +14,45 @@ Arquitetura do Projeto
 
 Instalação e Execução
 
+Backend
+
+Frontend
+
 Endpoints Principais
 
 Contribuição
 
 Autor
 
+Licença
+
+<a name="visao-geral"></a>
+
 Visão Geral
 
-O Wave foi projetado para simular uma experiência completa de streaming musical. O projeto utiliza padrões modernos de desenvolvimento, integração entre serviços e autenticação baseada em JWT, garantindo segurança e escalabilidade.
+Wave é um sistema acadêmico de streaming musical composto por backend (Spring Boot) e frontend (React + Vite). O projeto implementa autenticação segura via JWT, operações CRUD para usuários e uma UI responsiva construída com Tailwind CSS.
+
+<a name="tecnologias-utilizadas"></a>
 
 Tecnologias Utilizadas
+
 Backend
 
 Java 17
 
-Spring Boot 3.5+
+Spring Boot (versão usada no projeto)
 
 Spring Security
 
-JWT (JSON Web Token)
+JWT (com java-jwt)
 
-PostgreSQL
-
-H2 Database (ambiente de desenvolvimento)
+PostgreSQL / H2 (desenvolvimento)
 
 Maven
 
 Frontend
 
-React 18
+React
 
 Vite
 
@@ -53,102 +62,143 @@ Axios
 
 React Router
 
+<a name="funcionalidades"></a>
+
 Funcionalidades
+
 Implementadas
 
-Autenticação via JWT
+Autenticação JWT (login seguro)
 
-Cadastro e login de usuários
+CRUD de usuários (criar, listar, atualizar, deletar)
 
-CRUD completo de usuários
+Header dinâmico conforme estado de autenticação
 
-Header dinâmico baseado no estado de autenticação
+Layout responsivo com Tailwind CSS
 
-Interface responsiva desenvolvida em Tailwind CSS
+Documentação da API via OpenAPI / SpringDoc
 
-API REST documentada via SpringDoc
+Planejadas
 
-Previstas
+Upload de músicas
 
 Sistema de playlists
 
-Upload e gerenciamento de músicas
-
-Perfis personalizados
+Perfis de usuário
 
 Transmissões ao vivo
 
+<a name="arquitetura-do-projeto"></a>
+
 Arquitetura do Projeto
 Wave-MVP/
-├── backend/                 API REST em Spring Boot
-│   ├── controller/          Endpoints
-│   ├── service/             Regras de negócio
-│   ├── model/               Entidades JPA
-│   ├── repository/          Acesso ao banco
-│   ├── security/            Autenticação e JWT
-│   └── dto/                 Objetos de transferência
-│
-└── frontend/                Aplicação React
-    ├── components/          Componentes reutilizáveis
-    ├── pages/               Páginas da aplicação
-    ├── services/            Integração com API
-    └── data/                Dados estáticos
+├── backend/                 # API Spring Boot
+│   ├── src/
+│   │   ├── main/java/br/com/fatec/wave/
+│   │   │   ├── controller/
+│   │   │   ├── service/
+│   │   │   ├── repository/
+│   │   │   ├── model/
+│   │   │   ├── security/
+│   │   │   └── dto/
+│   └── pom.xml
+└── frontend/                # Aplicação React + Vite
+    ├── src/
+    │   ├── components/
+    │   ├── pages/
+    │   ├── services/
+    │   └── data/
+    └── package.json
+
+
+<a name="instalacao-e-execucao"></a>
 
 Instalação e Execução
-Requisitos
+Pré-requisitos
 
 Java 17+
 
 Node.js 18+
 
-PostgreSQL (apenas para ambiente de produção)
+(Opcional) PostgreSQL para ambiente de produção
 
-Backend (Spring Boot)
+<a name="backend"></a>
+
+Backend
+
+Entre na pasta do backend:
+
 cd backend
+
+
+Execute com o wrapper do Maven:
+
 ./mvnw spring-boot:run
 
 
-API disponível em:
-http://localhost:8080
+A API ficará disponível por padrão em http://localhost:8080.
 
-Frontend (React + Vite)
+Arquivo application.properties fornece configuração de H2 para desenvolvimento — preencha api.security.token.secret e credenciais de admin se necessário.
+
+<a name="frontend"></a>
+
+Frontend
+
+Entre na pasta do frontend:
+
 cd frontend
+
+
+Instale dependências e rode em modo de desenvolvimento:
+
 npm install
 npm run dev
 
 
-Aplicação disponível em:
-http://localhost:5173
+O frontend estará disponível por padrão em http://localhost:5173.
+
+O vite.config.js já tem proxy para o backend configurado (path /api), ajuste conforme necessário.
+
+<a name="endpoints-principais"></a>
 
 Endpoints Principais
+
 Autenticação
 
-POST /login – Autentica usuário
+POST /login — autenticar (retorna JWT)
 
-POST /usuarios – Cadastra novo usuário
+POST /usuarios — criar usuário
 
 Usuários
 
-GET /usuarios – Lista todos os usuários
+GET /usuarios — listar todos os usuários (autenticado)
 
-GET /usuarios/{id} – Detalhes de um usuário
+GET /usuarios/{id} — obter usuário por id
 
-PUT /usuarios/{id} – Atualiza usuário
+PUT /usuarios/{id} — atualizar usuário (roles: ADMIN ou USER)
 
-DELETE /usuarios/{id} – Remove usuário (somente ADMIN)
+DELETE /usuarios/{id} — deletar usuário (necessita role ADMIN)
+
+<a name="contribuicao"></a>
 
 Contribuição
 
-Contribuições são bem-vindas. Para colaborar:
+Faça um fork do repositório.
 
-Crie um fork
+Crie uma branch para sua feature: git checkout -b feature/minha-feature.
 
-Crie sua feature branch
+Faça commits claros e envie um pull request.
 
-Envie seu pull request
+Siga o estilo do código existente e adicione testes quando pertinente.
+
+<a name="autor"></a>
 
 Autor
 
-João Victor (joaolamin-dev)
-Desenvolvimento Full Stack
-Arquitetura e integração dos módulos frontend e backend
+João Victor (joaolamin-dev) — desenvolvimento full-stack, integração frontend/backend e arquitetura do projeto.
+
+<a name="licenca"></a>
+
+Licença
+
+Projeto desenvolvido para fins acadêmicos na FATEC Mauá. Adicione aqui a licença desejada (por exemplo, MIT) se quiser permitir contribuições externas com termos claros.
