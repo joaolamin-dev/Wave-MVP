@@ -1,0 +1,27 @@
+# Arquivos sensíveis - NUNCA versionar
+application-dev.properties
+application-prod.properties
+application-local.properties
+
+# Maven
+target/
+*.jar
+*.war
+*.ear
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# Logs
+*.log
+logs/
+
+# Sistema
+.DS_Store
+Thumbs.db

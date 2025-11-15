@@ -1,0 +1,63 @@
+# ==================== BACKEND ====================
+# Maven
+backend/target/
+backend/*.jar
+backend/*.war
+backend/*.ear
+
+# IDE
+backend/.idea/
+backend/*.iml
+backend/*.ipr
+backend/*.iws
+backend/.project
+backend/.classpath
+backend/.settings/
+
+# Logs
+backend/*.log
+backend/logs/
+
+# Sistema
+backend/.DS_Store
+backend/Thumbs.db
+
+# ==================== FRONTEND ====================
+# Dependencies
+frontend/node_modules/
+frontend/.pnpm-store/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# Build
+frontend/dist/
+frontend/build/
+
+# Environment
+frontend/.env
+frontend/.env.*
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# IDE
+frontend/.vscode/
+frontend/.idea/
+frontend/*.swp
+frontend/*.swo
+
+# Cache
+frontend/.eslintcache
+frontend/.parcel-cache/
+frontend/.vite/
+
+# Sistema
+frontend/.DS_Store
+frontend/Thumbs.db
+
+# ==================== GERAL ====================
+.DS_Store
+Thumbs.db
+*.log

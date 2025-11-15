@@ -1,0 +1,464 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* BOTÕES GLOBAIS - ESTILO DO HEADER APLICADO A TODOS OS BOTÕES */
+.btn-global, 
+button:not(.nav-btn):not([class*="bg-"]):not([class*="rounded-full"]),
+a[href]:not(.nav-btn):not([class*="bg-"]) {
+  padding: 8px 16px;
+  border-radius: 9999px;
+  transition: all 0.3s ease;
+  background: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  font-weight: 500;
+}
+
+.btn-global:hover, 
+button:not(.nav-btn):not([class*="bg-"]):not([class*="rounded-full"]):hover,
+a[href]:not(.nav-btn):not([class*="bg-"]):hover {
+  background: linear-gradient(to right, #ae00ff, #ff5280);
+  box-shadow: 0 0 10px #ff00cc80;
+  transform: scale(1.05);
+}
+
+/* Para botões que já têm cores específicas (como os de gradiente), mantenha o estilo original */
+button[class*="bg-gradient"], 
+a[class*="bg-gradient"],
+button[class*="bg-["],
+a[class*="bg-["] {
+  padding: 8px 16px !important;
+  border-radius: 9999px !important;
+  transition: all 0.3s ease !important;
+}
+
+button[class*="bg-gradient"]:hover, 
+a[class*="bg-gradient"]:hover,
+button[class*="bg-["]:hover,
+a[class*="bg-["]:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 0 15px rgba(255, 0, 204, 0.5) !important;
+}
+
+/* small helpers used in code above */
+@keyframes neonPulse {
+  0% {
+    text-shadow: 0 0 5px #ff66cc, 0 0 10px #ff66cc, 0 0 20px #ae00ff;
+  }
+  50% {
+    text-shadow: 0 0 15px #ff66cc, 0 0 25px #ae00ff;
+  }
+  100% {
+    text-shadow: 0 0 5px #ff66cc, 0 0 10px #ff66cc, 0 0 20px #ae00ff;
+  }
+}
+
+@keyframes pulseImg {
+  0% { box-shadow: 0 0 20px #ff00cc; transform: scale(1); }
+  50% { box-shadow: 0 0 40px #ae00ff; transform: scale(1.02); }
+  100% { box-shadow: 0 0 20px #ff00cc; transform: scale(1); }
+}
+
+.animate-neonPulse {
+  animation: neonPulse 2s infinite alternate;
+}
+
+.animate-pulseImg {
+  animation: pulseImg 2s infinite;
+}
+
+@keyframes scrollAlbums {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-scroll-albums {
+  animation: scrollAlbums 30s linear infinite;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeDropdown {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade {
+  animation: fadeDropdown 0.2s ease-out;
+}
+
+.nav-btn {
+  padding: 4px 12px !important; /* Reduzido ainda mais */
+  border-radius: 12px !important; /* Raio menor */
+  transition: all 0.3s ease;
+  font-size: 0.9rem !important;
+}
+
+.nav-btn:hover {
+  background: linear-gradient(to right, #ae00ff, #ff5280);
+  box-shadow: 0 0 8px #ff00cc80;
+  transform: scale(1.03); /* Scale reduzido */
+}
+
+
+@keyframes floatImg {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+.animate-floatImg {
+  animation: floatImg 4s ease-in-out infinite;
+}
+
+.border-neonPink {
+  border-image: linear-gradient(45deg, #ff00cc, #ae00ff, #ff66cc) 1;
+}
+
+.shadow-neon {
+  box-shadow: 0 0 20px #ff00cc, 0 0 40px #ae00ff;
+}
+
+@keyframes glowPulse {
+  0% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 0.6; transform: scale(1); }
+}
+
+.animate-glowPulse {
+  animation: glowPulse 4s ease-in-out infinite;
+}
+
+.bg-gradient-radial {
+  background: radial-gradient(circle, var(--tw-gradient-stops));
+}
+
+.abstract-ring-1 {
+  background: conic-gradient(from 120deg, #ff66cc55, #ae00ff66, #ff00cc44, #ff66cc55);
+  mix-blend-mode: screen;
+  transform: rotate(10deg);
+  animation: blobFloat 6s ease-in-out infinite;
+  border-radius: 9999px;
+}
+.abstract-ring-2 {
+  background: radial-gradient(circle at 20% 30%, #ff00cc33 0%, transparent 20%),
+              radial-gradient(circle at 80% 70%, #ae00ff22 0%, transparent 15%);
+  mix-blend-mode: screen;
+  animation: blobFloat 8s ease-in-out infinite reverse;
+  border-radius: 9999px;
+}
+
+.overlay-frost {
+  background: linear-gradient(120deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.stage-bg-elegant {
+  background: 
+    radial-gradient(600px 300px at 20% 25%, rgba(147, 51, 234, 0.2), transparent 40%),
+    radial-gradient(500px 250px at 80% 75%, rgba(139, 92, 246, 0.15), transparent 35%),
+    radial-gradient(400px 200px at 50% 50%, rgba(168, 85, 247, 0.1), transparent 30%),
+    linear-gradient(135deg, rgba(147, 51, 234, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);
+  filter: blur(25px) saturate(160%);
+  animation: elegantPulse 5s ease-in-out infinite;
+  border-radius: 20px;
+}
+
+.floating-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #a855f7 0%, #7c3aed 100%);
+  filter: blur(1px);
+  opacity: 0.7;
+  animation: floatParticle 6s ease-in-out infinite;
+}
+
+.fp1 { top: 15%; left: 10%; animation-delay: 0s; }
+.fp2 { top: 25%; right: 15%; animation-delay: 1s; }
+.fp3 { bottom: 20%; left: 15%; animation-delay: 2s; }
+.fp4 { bottom: 30%; right: 10%; animation-delay: 3s; }
+.fp5 { top: 45%; left: 85%; animation-delay: 4s; }
+.fp6 { top: 65%; right: 5%; animation-delay: 5s; }
+
+.sound-wave {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+  border: 2px solid transparent;
+  background: linear-gradient(135deg, #7c3aed22, #a855f722, #7c3aed22);
+  background-clip: padding-box;
+  animation: wavePulse 3s ease-out infinite;
+  mix-blend-mode: overlay;
+}
+
+.sound-wave-2 { animation-delay: 1s; border-width: 1px; }
+.sound-wave-3 { animation-delay: 2s; border-width: 1px; }
+
+.abstract-border {
+  position: absolute;
+  inset: -4px;
+  border-radius: 28px;
+  padding: 2px;
+  background: conic-gradient(from 0deg at 50% 50%, #7c3aed88, #a855f788, #c084fc88, #a855f788, #7c3aed88);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.8;
+  animation: rotateBorder 8s linear infinite;
+}
+
+.glow-pulse {
+  animation: glowPulseEffect 4s ease-in-out infinite;
+}
+
+@keyframes elegantPulse {
+  0% { opacity: 0.6; transform: scale(1); filter: blur(25px) saturate(140%); }
+  50% { opacity: 0.8; transform: scale(1.03); filter: blur(22px) saturate(180%); }
+  100% { opacity: 0.6; transform: scale(1); filter: blur(25px) saturate(140%); }
+}
+
+@keyframes floatParticle {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+  25% { transform: translate(10px, -15px) scale(1.2); opacity: 0.8; }
+  50% { transform: translate(-5px, -25px) scale(0.9); opacity: 0.6; }
+  75% { transform: translate(-15px, -10px) scale(1.1); opacity: 0.7; }
+}
+
+@keyframes wavePulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.5; }
+  100% { transform: scale(1.1); opacity: 0; }
+}
+
+@keyframes rotateBorder {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes glowPulseEffect {
+  0%, 100% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.3), 0 0 40px rgba(168, 85, 247, 0.2), 0 0 60px rgba(192, 132, 252, 0.1); }
+  50% { box-shadow: 0 0 30px rgba(124, 58, 237, 0.5), 0 0 60px rgba(168, 85, 247, 0.3), 0 0 90px rgba(192, 132, 252, 0.2); }
+}
+
+@keyframes blobFloat {
+  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.95; }
+  50% { transform: translateY(-8px) rotate(6deg) scale(1.03); opacity: 1; }
+  100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.95; }
+}
+
+.relative.z-10 img,
+.relative.z-10 .object-cover {
+  box-shadow: 0 0 80px rgba(124, 58, 237, 0.25);
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+.glitch-effect {
+  animation: glitch 0.5s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.glitch-effect:hover {
+  animation-play-state: running;
+}
+
+/* ESTILOS CORRIGIDOS PARA AS BARRAS - TOTALMENTE VISÍVEIS */
+.range-container {
+  position: relative;
+  width: 100%;
+}
+
+.range-track {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.range-progress {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 3px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: width 0.1s ease;
+}
+
+.range-input {
+  position: relative;
+  width: 100%;
+  height: 20px;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 10;
+}
+
+/* Volume específico */
+.volume-container {
+  position: relative;
+  width: 100%;
+  max-width: 120px;
+}
+
+.volume-track {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.volume-progress {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 2px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: width 0.1s ease;
+}
+
+.volume-input {
+  position: relative;
+  width: 100%;
+  height: 16px;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 10;
+}
+
+@media (max-width: 1024px) {
+  .sound-wave,
+  .floating-particle {
+    display: none;
+  }
+}
+
+/* ESTILO ESPECÍFICO PARA BOTÕES DO LOGIN - MAIS FORTE */
+main button.w-full.bg-gradient-to-r,
+main a.w-full.bg-gradient-to-r {
+  padding: 12px 24px !important;
+  border-radius: 9999px !important;
+  transition: all 0.3s ease !important;
+  font-weight: 600 !important;
+  border: none !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+  text-align: center !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+main button.w-full.bg-gradient-to-r:hover,
+main a.w-full.bg-gradient-to-r:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 0 25px rgba(255, 0, 204, 0.7) !important;
+  filter: brightness(1.15) !important;
+}
+
+/* Efeito de brilho extra no hover */
+main button.w-full.bg-gradient-to-r:hover::before,
+main a.w-full.bg-gradient-to-r:hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s ease;
+  animation: shine 1.5s ease;
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.btn-login {
+  padding: 12px 24px !important;
+  border-radius: 9999px !important;
+  transition: all 0.3s ease !important;
+  font-weight: 600 !important;
+  border: none !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+  text-align: center !important;
+}
+
+.btn-login:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 0 25px rgba(255, 0, 204, 0.7) !important;
+  filter: brightness(1.15) !important;
+}
+
+/* Links do Footer menores */
+footer a:not([class*="bg-"]) {
+  padding: 4px 10px !important;
+  border-radius: 9999px;
+  transition: all 0.3s ease;
+  font-size: 0.85rem !important;
+}
+
+footer a:not([class*="bg-"]):hover {
+  background: linear-gradient(to right, #ae00ff, #ff5280);
+  box-shadow: 0 0 8px #ff00cc80;
+  transform: scale(1.03);
+}
+
+/* Logo do Header */
+header .flex-1.justify-start a {
+  display: inline-block;
+  border-radius: 12px;
+  padding: 2px 8px !important; /* Padding FIXO sempre */
+  margin: -2px -8px !important; /* Margin FIXA sempre */
+}
+
+header .flex-1.justify-start a:hover {
+  background: linear-gradient(to right, #ae00ff, #ff5280) !important;
+  box-shadow: 0 0 6px #ff00cc80 !important;
+  transform: scale(1.02) !important;
+  /* REMOVI o padding e margin do hover - agora são fixos */
+}
