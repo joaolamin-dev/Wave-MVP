@@ -8,15 +8,14 @@ import br.com.fatec.wave.model.UserRole;
 import br.com.fatec.wave.model.Usuario;
 import br.com.fatec.wave.repository.UsuarioRepository;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
@@ -44,11 +43,16 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UsuarioResponseDTO> getAllUsuarios() {
-        return repository.findAll()
-                .stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+    public Page<UsuarioResponseDTO> getAllUsuarios(Pageable pageable) {
+        return repository.findAll(pageable)
+                .map(this::convertToDTO); // O Page já possui o .map() nativo
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<UsuarioResponseDTO> buscarPorNome(String nome, Pageable pageable) {
+        return repository.findByNomeContainingIgnoreCase(nome, pageable)
+                .map(this::convertToDTO);
     }
 
     @Override

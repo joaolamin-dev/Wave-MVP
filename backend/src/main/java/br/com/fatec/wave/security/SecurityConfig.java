@@ -30,27 +30,37 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ADICIONA CORS
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // 1. PERMITE O USO DE FRAMES PARA O H2 CONSOLE
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .authorizeHttpRequests(authorize -> authorize
+                        // Rotas públicas (Login, Cadastro, Swagger e H2)
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/usuarios/**").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.GET).authenticated()
+                        .requestMatchers("/h2-console/**").permitAll()
+
+                        // Apenas ADMIN pode criar ou editar Artistas e Músicas
+                        .requestMatchers(HttpMethod.POST, "/artistas/**", "/musicas/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/artistas/**", "/musicas/**").hasRole("ADMIN")
+
+                        // Regras gerais
+                        .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN") // Apenas Admin deleta qualquer coisa
+                        .requestMatchers(HttpMethod.PUT, "/usuarios/**").hasAnyRole("ADMIN", "USER") // Usuário pode editar próprio perfil
+                        .requestMatchers(HttpMethod.GET).authenticated() // Qualquer um logado pode fazer buscas (GET)
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
-    // CONFIGURAÇÃO CORS - PERMITE REQUESTS DO SEU FRONTEND
+    // CONFIGURAÇÃO CORS
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("*")); // Permite todas as origens
+        configuration.setAllowedOriginPatterns(List.of("*")); // Permite todas as origens locais
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

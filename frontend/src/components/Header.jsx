@@ -21,7 +21,7 @@ export default function Header() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userEmail = localStorage.getItem('userEmail');
-    
+
     if (token && userEmail) {
       buscarDadosUsuario();
     }
@@ -31,15 +31,17 @@ export default function Header() {
   const buscarDadosUsuario = async () => {
     setCarregando(true);
     try {
-      // Primeiro precisamos encontrar o ID do usuário pelo email
-      const response = await api.get('/usuarios');
-      const todosUsuarios = response.data;
-      
+      // Pega a página de usuários do Spring (adicionamos size=100 para garantir que ele ache na primeira página)
+      const response = await api.get('/usuarios?size=100');
+
+      // Acessando o .content porque o backend agora retorna paginação
+      const todosUsuarios = response.data.content;
+
       // Encontrar o usuário pelo email
-      const usuarioEncontrado = todosUsuarios.find(usuario => 
-        usuario.email === localStorage.getItem('userEmail')
+      const usuarioEncontrado = todosUsuarios.find(usuario =>
+          usuario.email === localStorage.getItem('userEmail')
       );
-      
+
       if (usuarioEncontrado) {
         // Agora buscar os dados completos pelo ID
         const userResponse = await api.get(`/usuarios/${usuarioEncontrado.id}`);
@@ -102,7 +104,7 @@ export default function Header() {
     }
 
     const filtro = artistas.filter((a) =>
-      a.nome.toLowerCase().includes(texto.toLowerCase())
+        a.nome.toLowerCase().includes(texto.toLowerCase())
     );
 
     setResultados(filtro);
@@ -123,135 +125,135 @@ export default function Header() {
   }
 
   return (
-    <header
-      onMouseEnter={() => setMouseSobre(true)}
-      onMouseLeave={() => setMouseSobre(false)}
-      className={`
+      <header
+          onMouseEnter={() => setMouseSobre(true)}
+          onMouseLeave={() => setMouseSobre(false)}
+          className={`
         fixed top-0 left-0 w-full z-50 flex items-center px-8 transition-all duration-500
 
         ${
-          // SEMPRE usa o estilo "scrolled" - py-1 (menor)
-          mouseSobre
-            ? "bg-[#34034b]/90 backdrop-blur-xl py-2 shadow-xl"  // Mouse sobre → sólido
-            : "bg-transparent backdrop-blur-sm py-1"             // Sem mouse → transparente
-        }
+              // SEMPRE usa o estilo "scrolled" - py-1 (menor)
+              mouseSobre
+                  ? "bg-[#34034b]/90 backdrop-blur-xl py-2 shadow-xl"  // Mouse sobre → sólido
+                  : "bg-transparent backdrop-blur-sm py-1"             // Sem mouse → transparente
+          }
       `}
-    >
-      {/* LOGO */}
-      <div className="flex-1 flex justify-start -ml-2">
-        <Link to="/">
-          <img
-            src="/assets/img/logo.png"
-            alt="Wave Logo"
-            className="h-10 drop-shadow-xl transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_20px_#ff00cc]"
-          />
-        </Link>
-      </div>
+      >
+        {/* LOGO */}
+        <div className="flex-1 flex justify-start -ml-2">
+          <Link to="/">
+            <img
+                src="/assets/img/logo.png"
+                alt="Wave Logo"
+                className="h-10 drop-shadow-xl transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_20px_#ff00cc]"
+            />
+          </Link>
+        </div>
 
-      {/* CAMPO DE PESQUISA */}
-      <div className="flex-1 flex justify-center relative" ref={dropdownRef}>
-        <input
-          type="text"
-          placeholder="Pesquise aqui seu artista favorito"
-          className={`
+        {/* CAMPO DE PESQUISA */}
+        <div className="flex-1 flex justify-center relative" ref={dropdownRef}>
+          <input
+              type="text"
+              placeholder="Pesquise aqui seu artista favorito"
+              className={`
             bg-[#5e237d]/80 backdrop-blur-xl text-white px-5 py-1.5 rounded-full
             w-[400px] outline-none transition-all duration-300 text-sm
 
             ${mouseSobre ? "shadow-[0_0_15px_#ff00cc]" : "shadow-none"}
           `}
-          value={busca}
-          onChange={(e) => filtrar(e.target.value)}
-          onKeyDown={pesquisarEnter}
-          onFocus={() => busca.length > 0 && setMostrarDropdown(true)}
-        />
+              value={busca}
+              onChange={(e) => filtrar(e.target.value)}
+              onKeyDown={pesquisarEnter}
+              onFocus={() => busca.length > 0 && setMostrarDropdown(true)}
+          />
 
-        {/* DROPDOWN */}
-        {mostrarDropdown && (
-          <div className="absolute top-12 w-[400px] bg-[#2b0040]/90 backdrop-blur-xl border border-white/20 rounded-xl shadow-xl text-white p-2 z-50 text-sm">
-            {resultados.map((artista, index) => (
-              <div
-                key={index}
-                className="px-3 py-1.5 hover:bg-[#ff00cc]/30 hover:cursor-pointer rounded-lg transition"
-                onClick={() => selecionar(artista)}
-              >
-                {artista.nome}
+          {/* DROPDOWN */}
+          {mostrarDropdown && (
+              <div className="absolute top-12 w-[400px] bg-[#2b0040]/90 backdrop-blur-xl border border-white/20 rounded-xl shadow-xl text-white p-2 z-50 text-sm">
+                {resultados.map((artista, index) => (
+                    <div
+                        key={index}
+                        className="px-3 py-1.5 hover:bg-[#ff00cc]/30 hover:cursor-pointer rounded-lg transition"
+                        onClick={() => selecionar(artista)}
+                    >
+                      {artista.nome}
+                    </div>
+                ))}
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+          )}
+        </div>
 
-      {/* MENU - DINÂMICO BASEADO NO LOGIN */}
-      <nav className="flex-1 flex justify-end gap-4 text-white font-medium text-sm">
-        <Link className="nav-btn" to="/">Home</Link>
-        
-        {usuarioLogado ? (
-          // USUÁRIO LOGADO - NOME REAL DA API
-          <div className="relative" ref={menuUsuarioRef}>
-            <button
-              onClick={() => setMostrarMenuUsuario(!mostrarMenuUsuario)}
-              className="nav-btn flex items-center gap-2 bg-[#ff00cc]/20 px-4 py-2 rounded-full hover:bg-[#ff00cc]/30 transition-all"
-              disabled={carregando}
-            >
-              {carregando ? (
-                <>
-                  <span>⏳</span>
-                  Carregando...
-                </>
-              ) : (
-                <>
-                  <span>👋</span>
-                  Bem-vindo, {usuarioLogado.nome}!
-                  <span className={`transform transition-transform ${mostrarMenuUsuario ? 'rotate-180' : ''}`}>
+        {/* MENU - DINÂMICO BASEADO NO LOGIN */}
+        <nav className="flex-1 flex justify-end gap-4 text-white font-medium text-sm">
+          <Link className="nav-btn" to="/">Home</Link>
+
+          {usuarioLogado ? (
+              // USUÁRIO LOGADO - NOME REAL DA API
+              <div className="relative" ref={menuUsuarioRef}>
+                <button
+                    onClick={() => setMostrarMenuUsuario(!mostrarMenuUsuario)}
+                    className="nav-btn flex items-center gap-2 bg-[#ff00cc]/20 px-4 py-2 rounded-full hover:bg-[#ff00cc]/30 transition-all"
+                    disabled={carregando}
+                >
+                  {carregando ? (
+                      <>
+                        <span>⏳</span>
+                        Carregando...
+                      </>
+                  ) : (
+                      <>
+                        <span>👋</span>
+                        Bem-vindo, {usuarioLogado.nome}!
+                        <span className={`transform transition-transform ${mostrarMenuUsuario ? 'rotate-180' : ''}`}>
                     ▼
                   </span>
-                </>
-              )}
-            </button>
-
-            {/* MENU DO USUÁRIO */}
-            {mostrarMenuUsuario && !carregando && (
-              <div className="absolute top-12 right-0 w-48 bg-[#2b0040]/95 backdrop-blur-xl border border-white/20 rounded-xl shadow-xl text-white p-2 z-50">
-                <div className="px-3 py-2 border-b border-white/10">
-                  <p className="text-sm font-semibold">{usuarioLogado.nome}</p>
-                  <p className="text-xs text-white/60">{usuarioLogado.email}</p>
-                </div>
-                
-                <Link 
-                  to="/perfil" 
-                  className="block px-3 py-2 hover:bg-[#ff00cc]/30 rounded-lg transition text-sm"
-                  onClick={() => setMostrarMenuUsuario(false)}
-                >
-                  Meu Perfil
-                </Link>
-                
-                <Link 
-                  to="/configuracoes" 
-                  className="block px-3 py-2 hover:bg-[#ff00cc]/30 rounded-lg transition text-sm"
-                  onClick={() => setMostrarMenuUsuario(false)}
-                >
-                  Configurações
-                </Link>
-                
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left px-3 py-2 hover:bg-red-500/30 rounded-lg transition text-sm mt-2 border-t border-white/10 pt-2"
-                >
-                  Sair
+                      </>
+                  )}
                 </button>
+
+                {/* MENU DO USUÁRIO */}
+                {mostrarMenuUsuario && !carregando && (
+                    <div className="absolute top-12 right-0 w-48 bg-[#2b0040]/95 backdrop-blur-xl border border-white/20 rounded-xl shadow-xl text-white p-2 z-50">
+                      <div className="px-3 py-2 border-b border-white/10">
+                        <p className="text-sm font-semibold">{usuarioLogado.nome}</p>
+                        <p className="text-xs text-white/60">{usuarioLogado.email}</p>
+                      </div>
+
+                      <Link
+                          to="/perfil"
+                          className="block px-3 py-2 hover:bg-[#ff00cc]/30 rounded-lg transition text-sm"
+                          onClick={() => setMostrarMenuUsuario(false)}
+                      >
+                        Meu Perfil
+                      </Link>
+
+                      <Link
+                          to="/configuracoes"
+                          className="block px-3 py-2 hover:bg-[#ff00cc]/30 rounded-lg transition text-sm"
+                          onClick={() => setMostrarMenuUsuario(false)}
+                      >
+                        Configurações
+                      </Link>
+
+                      <button
+                          onClick={handleLogout}
+                          className="w-full text-left px-3 py-2 hover:bg-red-500/30 rounded-lg transition text-sm mt-2 border-t border-white/10 pt-2"
+                      >
+                        Sair
+                      </button>
+                    </div>
+                )}
               </div>
-            )}
-          </div>
-        ) : (
-          // USUÁRIO NÃO LOGADO
-          <>
-            <Link className="nav-btn" to="/Cadastro">Entre na Onda</Link>
-            <Link className="nav-btn" to="/Login">Login</Link>
-          </>
-        )}
-        
-        <Link className="nav-btn" to="/Premium">Seja Premium</Link>
-      </nav>
-    </header>
+          ) : (
+              // USUÁRIO NÃO LOGADO
+              <>
+                <Link className="nav-btn" to="/Cadastro">Entre na Onda</Link>
+                <Link className="nav-btn" to="/Login">Login</Link>
+              </>
+          )}
+
+          <Link className="nav-btn" to="/Premium">Seja Premium</Link>
+        </nav>
+      </header>
   );
 }

@@ -7,6 +7,8 @@ import Linkin_Park from "./pages/Linkin_Park";
 import Jorge_Mateus from "./pages/Jorge_Mateus";
 import Livinho from "./pages/Livinho";
 import System from "./pages/System";
+import Perfil from './pages/Perfil';
+
 
 import Sobre from "./pages/Sobre";
 import Empregos from "./pages/Empregos";
@@ -44,6 +46,7 @@ export default function App() {
         <Route path="/Free" element={<Free />} />
         <Route path="/Cadastro" element={<Cadastro />} />
         <Route path="/Login" element={<Login />} />
+        <Route path="/perfil" element={<Perfil />} />
       </Routes>
     </div>
   );

@@ -3,12 +3,14 @@ package br.com.fatec.wave.service;
 import br.com.fatec.wave.dto.AtualizarUsuarioDTO;
 import br.com.fatec.wave.dto.CriarUsuarioDTO;
 import br.com.fatec.wave.dto.UsuarioResponseDTO;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UsuarioService {
 
-    List<UsuarioResponseDTO> getAllUsuarios();
+    Page<UsuarioResponseDTO> getAllUsuarios(Pageable pageable);
+
+    Page<UsuarioResponseDTO> buscarPorNome(String nome, Pageable pageable);
 
     UsuarioResponseDTO getUsuarioById(Long id);
 
