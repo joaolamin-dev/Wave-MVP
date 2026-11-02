@@ -1,9 +1,15 @@
 package br.com.fatec.wave.security;
 
+import br.com.fatec.wave.dto.ErroResponseDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +24,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.io.IOException;
+import java.time.Instant;
 import java.util.List;
 
 @Configuration
@@ -26,6 +34,9 @@ public class SecurityConfig {
 
     @Autowired
     private SecurityFilter securityFilter;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -53,8 +64,22 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET).authenticated() // Qualquer um logado pode fazer buscas (GET)
                         .anyRequest().authenticated()
                 )
+                .exceptionHandling(erros -> erros
+                        .authenticationEntryPoint((request, response, ex) ->
+                                escreverErro(request, response, HttpStatus.UNAUTHORIZED, "Token ausente ou inválido"))
+                        .accessDeniedHandler((request, response, ex) ->
+                                escreverErro(request, response, HttpStatus.FORBIDDEN, "Sem permissão para esta operação"))
+                )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
+    }
+
+    // Erros do Spring Security acontecem antes dos controllers, fora do alcance do GlobalExceptionHandler.
+    private void escreverErro(HttpServletRequest request, HttpServletResponse response, HttpStatus status, String mensagem) throws IOException {
+        response.setStatus(status.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        objectMapper.writeValue(response.getOutputStream(),
+                new ErroResponseDTO(Instant.now(), status.value(), status.getReasonPhrase(), mensagem, request.getRequestURI()));
     }
 
     // CONFIGURAÇÃO CORS
