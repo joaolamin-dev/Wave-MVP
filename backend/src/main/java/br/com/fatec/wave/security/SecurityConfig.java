@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/error").permitAll()
 
                         // Apenas ADMIN pode criar ou editar Artistas e Músicas
                         .requestMatchers(HttpMethod.POST, "/artistas/**", "/musicas/**").hasRole("ADMIN")
