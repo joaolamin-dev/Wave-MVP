@@ -10,6 +10,8 @@ import br.com.fatec.wave.repository.UsuarioRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -86,6 +88,12 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     @Override
     @Transactional
     public UsuarioResponseDTO atualizarUsuario(Long id, AtualizarUsuarioDTO atualizarUsuarioDTO) {
+        // Vem antes da busca para um USER não descobrir quais ids existem pela diferença entre 403 e 404.
+        var autenticado = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!id.equals(autenticado.getId()) && autenticado.getRole() != UserRole.ADMIN) {
+            throw new AccessDeniedException("Sem permissão para esta operação");
+        }
+
         Usuario usuarioExiste = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario não existe com o id: " + id));
 
