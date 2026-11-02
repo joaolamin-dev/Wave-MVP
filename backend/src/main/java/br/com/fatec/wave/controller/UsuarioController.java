@@ -6,6 +6,7 @@ import br.com.fatec.wave.dto.UsuarioResponseDTO;
 import br.com.fatec.wave.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -54,7 +55,7 @@ public class UsuarioController {
     @PostMapping
     @CacheEvict(value = "listaDeUsuarios", allEntries = true) // Limpa o cache ao criar um novo usuário
     @Operation(summary = "Criar um novo usuário", description = "Cadastra um novo usuário no sistema retornando a URI de criação.")
-    public ResponseEntity<UsuarioResponseDTO> criarUsuario(@RequestBody CriarUsuarioDTO criarUsuarioDTO) {
+    public ResponseEntity<UsuarioResponseDTO> criarUsuario(@RequestBody @Valid CriarUsuarioDTO criarUsuarioDTO) {
         UsuarioResponseDTO usuarioCriado = service.criarUsuario(criarUsuarioDTO);
 
         URI location = ServletUriComponentsBuilder
@@ -68,7 +69,7 @@ public class UsuarioController {
     @PutMapping("/{id}")
     @CacheEvict(value = "listaDeUsuarios", allEntries = true) // Limpa o cache ao atualizar dados
     @Operation(summary = "Atualizar usuário existente", description = "Atualiza parcialmente ou totalmente os dados de um usuário.")
-    public ResponseEntity<UsuarioResponseDTO> atualizarUsuario(@PathVariable Long id, @RequestBody AtualizarUsuarioDTO atualizarUsuarioDTO) {
+    public ResponseEntity<UsuarioResponseDTO> atualizarUsuario(@PathVariable Long id, @RequestBody @Valid AtualizarUsuarioDTO atualizarUsuarioDTO) {
         UsuarioResponseDTO usuarioAtualizado = service.atualizarUsuario(id, atualizarUsuarioDTO);
         return ResponseEntity.ok(usuarioAtualizado);
     }

@@ -1,14 +1,17 @@
 package br.com.fatec.wave.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 
 @Schema(description = "Objeto contendo as credenciais para realizar o login na aplicação")
 public record DadosAutenticacao(
 
         @Schema(description = "E-mail cadastrado do usuário", example = "admin@wave.com")
+        @NotBlank(message = "é obrigatório")
         String email,
 
         @Schema(description = "Senha do usuário", example = "123456")
+        @NotBlank(message = "é obrigatória")
         String senha
 ) {
 }
