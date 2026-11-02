@@ -5,6 +5,7 @@ import br.com.fatec.wave.model.TipoArtista;
 import br.com.fatec.wave.service.ArtistaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -46,7 +47,7 @@ public class ArtistaController {
     @PostMapping
     @CacheEvict(value = "listaArtistas", allEntries = true)
     @Operation(summary = "Criar um novo artista")
-    public ResponseEntity<ArtistaResponseDTO> criar(@RequestBody CriarArtistaDTO dto) {
+    public ResponseEntity<ArtistaResponseDTO> criar(@RequestBody @Valid CriarArtistaDTO dto) {
         ArtistaResponseDTO response = service.criarArtista(dto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.id()).toUri();
         return ResponseEntity.created(location).body(response);
@@ -55,7 +56,7 @@ public class ArtistaController {
     @PutMapping("/{id}")
     @CacheEvict(value = "listaArtistas", allEntries = true)
     @Operation(summary = "Atualizar artista")
-    public ResponseEntity<ArtistaResponseDTO> atualizar(@PathVariable Long id, @RequestBody AtualizarArtistaDTO dto) {
+    public ResponseEntity<ArtistaResponseDTO> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizarArtistaDTO dto) {
         return ResponseEntity.ok(service.atualizarArtista(id, dto));
     }
 
