@@ -25,3 +25,7 @@ logs/
 # Sistema
 .DS_Store
 Thumbs.db
+
+# Banco H2 local
+wavedb*.db
+wavedb*.log
