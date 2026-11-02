@@ -20,19 +20,14 @@ export default function Cadastro() {
     senha: formData.get('senha')
   };
 
-  console.log('📤 Dados sendo enviados:', userData);
-
   try {
     const response = await api.post('/usuarios', userData);
-    console.log('✅ Resposta da API:', response);
     
     if (response.status === 201) {
       alert('Cadastro realizado com sucesso! Faça login para continuar.');
       navigate('/Login');
     }
   } catch (error) {
-    console.error('❌ Erro detalhado:', error);
-    console.log('📊 Response error:', error.response);
     
     // Mostra o erro específico da API
     if (error.response?.data?.message) {
