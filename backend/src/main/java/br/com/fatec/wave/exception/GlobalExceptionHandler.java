@@ -10,6 +10,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -17,6 +18,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.Instant;
+import java.util.stream.Collectors;
 
 // Herda de ResponseEntityExceptionHandler para que erros do Spring (rota inexistente, JSON inválido)
 // mantenham o status 4xx em vez de cair no tratamento genérico de 500.
@@ -52,6 +54,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> tratarErroInesperado(Exception ex, HttpServletRequest request) {
         logger.error("Erro inesperado em " + request.getRequestURI(), ex);
         return criarResposta(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno no servidor", request.getRequestURI());
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        // Ordena porque o validador não garante a ordem dos erros.
+        String mensagem = ex.getBindingResult().getFieldErrors().stream()
+                .map(erro -> erro.getField() + ": " + erro.getDefaultMessage())
+                .sorted()
+                .collect(Collectors.joining("; "));
+        return handleExceptionInternal(ex, ProblemDetail.forStatusAndDetail(status, mensagem), headers, status, request);
     }
 
     @Override
