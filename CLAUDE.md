@@ -30,7 +30,7 @@ npm run lint       # eslint com --max-warnings 0 (qualquer warning quebra)
 
 ### URLs úteis com o backend rodando
 - Swagger UI: http://localhost:8080/swagger-ui.html
-- H2 console: http://localhost:8080/h2-console (JDBC `jdbc:h2:file:./wavedb`, user/senha `sa`/`sa`)
+- H2 console (só no perfil `dev`): http://localhost:8080/h2-console (JDBC `jdbc:h2:file:./wavedb`, user/senha `sa`/`sa`)
 
 ## Arquitetura do backend
 
@@ -45,12 +45,16 @@ Exceção a esse padrão: `PlaylistController` fala direto com `PlaylistReposito
 4. `Usuario` **implementa `UserDetails`** diretamente (`getUsername()` retorna o e-mail, `getPassword()` retorna `senha`). `UsuarioServiceImpl` também implementa `UserDetailsService`.
 5. `UserRole.ADMIN` recebe `ROLE_ADMIN` **e** `ROLE_USER` em `Usuario.getAuthorities()`.
 
-Toda a autorização está centralizada nas regras de `SecurityFilterChain` em `SecurityConfig` (não há `@PreAuthorize` nos controllers): públicos são `POST /login`, `POST /usuarios`, Swagger e `/h2-console/**`; POST/PUT em `/artistas/**` e `/musicas/**` exigem ADMIN; qualquer DELETE exige ADMIN; todo o resto exige autenticação. Ao criar um endpoint novo, a regra tem que ser adicionada lá.
+Toda a autorização está centralizada nas regras de `SecurityFilterChain` em `SecurityConfig` (não há `@PreAuthorize` nos controllers): públicos são `POST /login`, `POST /usuarios`, Swagger e, só com o console H2 ligado, `/h2-console/**`; POST/PUT em `/artistas/**` e `/musicas/**` exigem ADMIN; qualquer DELETE exige ADMIN; todo o resto exige autenticação. Ao criar um endpoint novo, a regra tem que ser adicionada lá.
 
 ### Persistência e dados iniciais
-H2 em **arquivo** (`backend/wavedb.mv.db`, não versionado) com `ddl-auto=update` — o schema evolui pelas entidades, não há migrations. `DataInitializerConfig` é um `CommandLineRunner` idempotente que cria um único admin (de `app.admin.*` no `application.properties`, por padrão `admin@wave.com` / `123456`), artistas, músicas e playlists de exemplo. Apagar `wavedb.mv.db` recria tudo do zero.
+Perfis: `dev` é o padrão (`spring.profiles.default`), `prod` é ativado por `SPRING_PROFILES_ACTIVE=prod` e `test` é ativado em `src/test/resources/config/application.properties`. Nenhum valor real fica versionado.
 
-As dependências de MySQL e PostgreSQL estão no `pom.xml` para deploy, mas o perfil ativo é H2.
+- `dev`: H2 em **arquivo** (`backend/wavedb.mv.db`, não versionado), console H2 ligado, segredo e senha do admin falsos (`dev-only-nao-usar-em-producao`).
+- `prod`: PostgreSQL no Neon, console H2 desligado. Exige as variáveis `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, `JWT_SECRET`, `ADMIN_EMAIL` e `ADMIN_PASSWORD`, sem valor padrão. A URL do Neon precisa estar no formato JDBC: `jdbc:postgresql://host/db?sslmode=require`, com usuário e senha nas variáveis separadas (não use o `postgresql://usuario:senha@...` do painel).
+- `test`: H2 em memória.
+
+`dev` e `prod` usam `ddl-auto=update` — o schema evolui pelas entidades, não há migrations. `DataInitializerConfig` é um `CommandLineRunner` idempotente que cria um único admin (de `app.admin.*`), artistas, músicas e playlists de exemplo. Admin já existente não é alterado: mudar `ADMIN_PASSWORD` depois do primeiro start não troca a senha. Apagar `wavedb.mv.db` recria tudo do zero em `dev`.
 
 ### Outros pontos
 - Cache: `@EnableCaching` no `WaveApplication`; `UsuarioController` usa `@Cacheable("listaDeUsuarios")` no GET e `@CacheEvict(allEntries = true)` em POST/PUT/DELETE. Mantenha o evict ao adicionar mutações.

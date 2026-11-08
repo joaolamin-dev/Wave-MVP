@@ -1,6 +1,4 @@
 # Arquivos sensíveis - NUNCA versionar
-application-dev.properties
-application-prod.properties
 application-local.properties
 
 # Maven
