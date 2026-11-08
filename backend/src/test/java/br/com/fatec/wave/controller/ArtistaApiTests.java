@@ -82,7 +82,7 @@ class ArtistaApiTests {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.error").value("Bad Request"))
-                .andExpect(jsonPath("$.message").value("Failed to convert 'id' with value: 'abc'"))
+                .andExpect(jsonPath("$.message").value("Parâmetro 'id' inválido"))
                 .andExpect(jsonPath("$.path").value("/artistas/abc"))
                 .andExpect(jsonPath("$.timestamp").isNotEmpty());
     }
