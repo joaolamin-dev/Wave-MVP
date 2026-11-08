@@ -5,6 +5,7 @@ import br.com.fatec.wave.model.GeneroMusical;
 import br.com.fatec.wave.service.MusicaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -46,7 +47,7 @@ public class MusicaController {
     @PostMapping
     @CacheEvict(value = "listaMusicas", allEntries = true)
     @Operation(summary = "Cadastrar uma música")
-    public ResponseEntity<MusicaResponseDTO> criar(@RequestBody CriarMusicaDTO dto) {
+    public ResponseEntity<MusicaResponseDTO> criar(@RequestBody @Valid CriarMusicaDTO dto) {
         MusicaResponseDTO response = service.criarMusica(dto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.id()).toUri();
         return ResponseEntity.created(location).body(response);
@@ -55,7 +56,7 @@ public class MusicaController {
     @PutMapping("/{id}")
     @CacheEvict(value = "listaMusicas", allEntries = true)
     @Operation(summary = "Atualizar música")
-    public ResponseEntity<MusicaResponseDTO> atualizar(@PathVariable Long id, @RequestBody AtualizarMusicaDTO dto) {
+    public ResponseEntity<MusicaResponseDTO> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizarMusicaDTO dto) {
         return ResponseEntity.ok(service.atualizarMusica(id, dto));
     }
 

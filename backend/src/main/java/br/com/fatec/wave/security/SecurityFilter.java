@@ -27,14 +27,25 @@ public class SecurityFilter extends OncePerRequestFilter {
         var tokenJWT = recuperarToken(request);
 
         if (tokenJWT != null) {
-            var subject = tokenService.getSubject(tokenJWT);
-            var usuario = usuarioRepository.findByEmail(subject).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
-
-            var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            autenticar(tokenJWT);
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    // Token inválido, expirado ou de usuário removido não autentica, mas também não barra: rotas públicas seguem funcionando.
+    private void autenticar(String tokenJWT) {
+        String subject;
+        try {
+            subject = tokenService.getSubject(tokenJWT);
+        } catch (RuntimeException tokenInvalido) {
+            return;
+        }
+
+        usuarioRepository.findByEmail(subject).ifPresent(usuario -> {
+            var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        });
     }
 
     private String recuperarToken(HttpServletRequest request) {

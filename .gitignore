@@ -37,6 +37,7 @@ frontend/build/
 # Environment
 frontend/.env
 frontend/.env.*
+!frontend/.env.example
 frontend/.env.local
 frontend/.env.development.local
 frontend/.env.test.local
