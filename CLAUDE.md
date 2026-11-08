@@ -51,7 +51,7 @@ Toda a autorização está centralizada nas regras de `SecurityFilterChain` em `
 Perfis: `dev` é o padrão (`spring.profiles.default`), `prod` é ativado por `SPRING_PROFILES_ACTIVE=prod` e `test` é ativado em `src/test/resources/config/application.properties`. Nenhum valor real fica versionado.
 
 - `dev`: H2 em **arquivo** (`backend/wavedb.mv.db`, não versionado), console H2 ligado, segredo e senha do admin falsos (`dev-only-nao-usar-em-producao`).
-- `prod`: PostgreSQL no Neon, console H2 desligado. Exige as variáveis `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, `JWT_SECRET`, `ADMIN_EMAIL` e `ADMIN_PASSWORD`, sem valor padrão. A URL do Neon precisa estar no formato JDBC: `jdbc:postgresql://host/db?sslmode=require`, com usuário e senha nas variáveis separadas (não use o `postgresql://usuario:senha@...` do painel).
+- `prod`: PostgreSQL no Neon, console H2 desligado. Exige as variáveis `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, `JWT_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` e `CORS_ALLOWED_ORIGINS`, sem valor padrão. A URL do Neon precisa estar no formato JDBC: `jdbc:postgresql://host/db?sslmode=require`, com usuário e senha nas variáveis separadas (não use o `postgresql://usuario:senha@...` do painel).
 - `test`: H2 em memória.
 
 `dev` e `prod` usam `ddl-auto=update` — o schema evolui pelas entidades, não há migrations. `DataInitializerConfig` é um `CommandLineRunner` idempotente que cria um único admin (de `app.admin.*`), artistas, músicas e playlists de exemplo. Admin já existente não é alterado: mudar `ADMIN_PASSWORD` depois do primeiro start não troca a senha. Apagar `wavedb.mv.db` recria tudo do zero em `dev`.
@@ -61,13 +61,13 @@ Perfis: `dev` é o padrão (`spring.profiles.default`), `prod` é ativado por `S
 - Listagens e buscas são **paginadas** (`Page`/`Pageable`); as buscas seguem o padrão `/{recurso}/buscar-*` (ex. `/musicas/buscar-titulo`, `/artistas/buscar-tipo`) exceto `/usuarios/buscar`.
 - Erros 404 vêm de `ResourceNotFoundException` anotada com `@ResponseStatus(NOT_FOUND)`; não há `@ControllerAdvice`.
 - `SpringDocConfig` define o security scheme `bearer-key`; use `@Tag`/`@Operation` nos endpoints novos como nos existentes.
-- CORS libera todas as origens (`setAllowedOriginPatterns(List.of("*"))`).
+- CORS aceita só as origens de `app.cors.allowed-origins` (variável `CORS_ALLOWED_ORIGINS`), sem credenciais.
 
 ## Arquitetura do frontend
 
 `main.jsx` → `App.jsx`, que é só uma tabela de `<Route>` em `react-router-dom` v7. Cada página mora em `src/pages/` e renderiza `Header` + `Footer` por conta própria (não há layout compartilhado).
 
-- **`src/services/api.js`** — instância única do axios. `baseURL` alterna por `import.meta.env.DEV`: `http://localhost:8080` em dev, Render em produção. Um interceptor injeta `Authorization: Bearer <token>` lendo `localStorage`. **Use sempre esse `api`, nunca `axios` ou `fetch` direto.**
+- **`src/services/api.js`** — instância única do axios. `baseURL` vem de `VITE_API_URL`: em dev, sem ela, usa `http://localhost:8080`; em produção, é obrigatória. Um interceptor injeta `Authorization: Bearer <token>` lendo `localStorage`. **Use sempre esse `api`, nunca `axios` ou `fetch` direto.**
 - **Sessão** — não existe context/store de auth. O estado de login é `localStorage.token` + `localStorage.userEmail`, lido direto por `Header.jsx`, `Login.jsx` e `Perfil.jsx`. Como a API não tem endpoint "usuário atual", esses componentes fazem `GET /usuarios?size=100` e filtram pelo e-mail salvo; playlists vêm de `GET /meu-perfil/playlists` (o backend resolve o usuário pelo token).
 - **Páginas de artista** — `_ArtistTemplate.jsx` concentra toda a UI e o player de áudio (`useRef` em `<audio>`, play/pause/next/prev/volume/progresso, ícones SVG inline). Cada artista é um wrapper fino (ex. `Linkin_Park.jsx`) que passa `name`, `description`, `images`, `albums`, `musics` como props literais. **Para adicionar um artista: criar o wrapper, registrar a rota em `App.jsx` e adicionar a entrada em `src/data/artistas.js`** (essa lista alimenta a busca do `Header`).
 - **Assets** — mp3 e imagens ficam em `frontend/public/assets/{mp3,img}` e são referenciados por caminho absoluto (`/assets/mp3/Faint.mp3`). `src/data/artistsData.js` é legado e usa caminhos `/mp3/...` e `/images/...` que não existem; não é importado por nada — prefira `data/artistas.js`.
