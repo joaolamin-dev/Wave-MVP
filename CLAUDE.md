@@ -45,7 +45,7 @@ Exceção a esse padrão: `PlaylistController` fala direto com `PlaylistReposito
 4. `Usuario` **implementa `UserDetails`** diretamente (`getUsername()` retorna o e-mail, `getPassword()` retorna `senha`). `UsuarioServiceImpl` também implementa `UserDetailsService`.
 5. `UserRole.ADMIN` recebe `ROLE_ADMIN` **e** `ROLE_USER` em `Usuario.getAuthorities()`.
 
-Toda a autorização está centralizada nas regras de `SecurityFilterChain` em `SecurityConfig` (não há `@PreAuthorize` nos controllers): públicos são `POST /login`, `POST /usuarios`, Swagger, `/error` e, só com o console H2 ligado, `/h2-console/**`; POST/PUT em `/artistas/**` e `/musicas/**` exigem ADMIN; qualquer DELETE exige ADMIN; todo o resto exige autenticação. Ao criar um endpoint novo, a regra tem que ser adicionada lá.
+Toda a autorização está centralizada nas regras de `SecurityFilterChain` em `SecurityConfig` (não há `@PreAuthorize` nos controllers): públicos são `POST /login`, `POST /usuarios`, Swagger, `/error` e, só com o console H2 ligado, `/h2-console/**`; POST/PUT em `/artistas/**` e `/musicas/**` exigem ADMIN; GET em `/usuarios/**` (listagem, busca e por id) exige ADMIN; qualquer DELETE exige ADMIN; todo o resto exige autenticação. Ao criar um endpoint novo, a regra tem que ser adicionada lá.
 
 ### Persistência e dados iniciais
 Perfis: `dev` é o padrão (`spring.profiles.default`), `prod` é ativado por `SPRING_PROFILES_ACTIVE=prod` e `test` é ativado em `src/test/resources/config/application.properties`. Nenhum valor real fica versionado.
@@ -67,12 +67,11 @@ Perfis: `dev` é o padrão (`spring.profiles.default`), `prod` é ativado por `S
 
 `main.jsx` → `App.jsx`, que é só uma tabela de `<Route>` em `react-router-dom` v7. Cada página mora em `src/pages/` e renderiza `Header` + `Footer` por conta própria (não há layout compartilhado).
 
-- **`src/services/api.js`** — instância única do axios. `baseURL` vem de `VITE_API_URL`: em dev, sem ela, usa `http://localhost:8080`; em produção, é obrigatória. Um interceptor injeta `Authorization: Bearer <token>` lendo `localStorage`. **Use sempre esse `api`, nunca `axios` ou `fetch` direto.**
-- **Sessão** — não existe context/store de auth. O estado de login é `localStorage.token` + `localStorage.userEmail`, lido direto por `Header.jsx`, `Login.jsx` e `Perfil.jsx`. A API já tem `GET /meu-perfil`, mas `Header.jsx` e `Perfil.jsx` ainda fazem `GET /usuarios?size=100` e filtram pelo e-mail salvo; playlists vêm de `GET /meu-perfil/playlists` (o backend resolve o usuário pelo token).
+- **`src/services/api.js`** — instância única do axios. `baseURL` vem de `VITE_API_URL`: em dev, sem ela, usa `http://localhost:8080`; em produção, é obrigatória. Um interceptor injeta `Authorization: Bearer <token>` lendo `localStorage`, exceto em `POST /login` e `POST /usuarios`. Outro trata 401 em um único lugar: limpa a sessão e leva a `/Login`; o 401 dessas duas rotas públicas não redireciona, o que evita laço. **Use sempre esse `api`, nunca `axios` ou `fetch` direto.**
+- **Sessão** — não existe context/store de auth. O estado de login é `localStorage.token`, gravado por `Login.jsx` e lido direto por `Header.jsx` e `Perfil.jsx`. Os dados do usuário logado vêm de `GET /meu-perfil`; playlists vêm de `GET /meu-perfil/playlists` (o backend resolve o usuário pelo token).
 - **Páginas de artista** — `_ArtistTemplate.jsx` concentra toda a UI e o player de áudio (`useRef` em `<audio>`, play/pause/next/prev/volume/progresso, ícones SVG inline). Cada artista é um wrapper fino (ex. `Linkin_Park.jsx`) que passa `name`, `description`, `images`, `albums`, `musics` como props literais. **Para adicionar um artista: criar o wrapper, registrar a rota em `App.jsx` e adicionar a entrada em `src/data/artistas.js`** (essa lista alimenta a busca do `Header`).
 - **Assets** — mp3 e imagens ficam em `frontend/public/assets/{mp3,img}` e são referenciados por caminho absoluto (`/assets/mp3/Faint.mp3`). `src/data/artistsData.js` é legado e usa caminhos `/mp3/...` e `/images/...` que não existem; não é importado por nada — prefira `data/artistas.js`.
 - **Estilo** — Tailwind v3 com a paleta custom `wave-*` e `bg-wave-gradient` em `tailwind.config.js`, embora boa parte das páginas use cores arbitrárias (`#2c003e`, `#ff00cc`) inline.
-- O proxy `/api` em `vite.config.js` aponta para o endereço antigo do backend no Render e não é usado pelo `api.js`.
 
 ## Deploy
 

@@ -19,10 +19,7 @@ export default function Header() {
 
   // Verificar se usuário está logado e buscar dados da API
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userEmail = localStorage.getItem('userEmail');
-
-    if (token && userEmail) {
+    if (localStorage.getItem('token')) {
       buscarDadosUsuario();
     }
   }, []);
@@ -31,30 +28,10 @@ export default function Header() {
   const buscarDadosUsuario = async () => {
     setCarregando(true);
     try {
-      // Pega a página de usuários do Spring (adicionamos size=100 para garantir que ele ache na primeira página)
-      const response = await api.get('/usuarios?size=100');
-
-      // Acessando o .content porque o backend agora retorna paginação
-      const todosUsuarios = response.data.content;
-
-      // Encontrar o usuário pelo email
-      const usuarioEncontrado = todosUsuarios.find(usuario =>
-          usuario.email === localStorage.getItem('userEmail')
-      );
-
-      if (usuarioEncontrado) {
-        // Agora buscar os dados completos pelo ID
-        const userResponse = await api.get(`/usuarios/${usuarioEncontrado.id}`);
-        setUsuarioLogado({
-          id: userResponse.data.id,
-          nome: userResponse.data.nome,
-          email: userResponse.data.email
-        });
-      }
+      const response = await api.get('/meu-perfil');
+      setUsuarioLogado(response.data);
     } catch (error) {
       console.error('Erro ao buscar dados do usuário:', error);
-      // Se der erro, faz logout para limpar dados inválidos
-      handleLogout();
     } finally {
       setCarregando(false);
     }

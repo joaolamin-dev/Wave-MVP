@@ -11,11 +11,8 @@ export default function Perfil() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const email = localStorage.getItem('userEmail');
-        const token = localStorage.getItem('token');
-
         // Se não estiver logado, chuta pro login
-        if (!email || !token) {
+        if (!localStorage.getItem('token')) {
             navigate('/Login');
             return;
         }
@@ -23,11 +20,8 @@ export default function Perfil() {
         async function carregarDadosDoPerfil() {
             try {
                 // 1. Buscar os dados do usuário logado
-                const resUsuarios = await api.get('/usuarios?size=100');
-                const userEncontrado = resUsuarios.data.content.find(u => u.email === email);
-                if (userEncontrado) {
-                    setUsuario(userEncontrado);
-                }
+                const resUsuario = await api.get('/meu-perfil');
+                setUsuario(resUsuario.data);
 
                 // 2. Buscar as playlists exclusivas dele
                 const resPlaylists = await api.get('/meu-perfil/playlists');

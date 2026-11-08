@@ -26,7 +26,6 @@ export default function Login() {
       if (response.data.token) {
         // Salva o token no localStorage
         localStorage.setItem('token', response.data.token);
-        localStorage.setItem('userEmail', loginData.email);
         
         alert('Login realizado com sucesso!');
         navigate('/'); // Redireciona para a página inicial

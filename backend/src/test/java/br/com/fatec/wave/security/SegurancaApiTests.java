@@ -150,6 +150,32 @@ class SegurancaApiTests {
                 .andExpect(status().isUnauthorized());
     }
 
+    @Test
+    void listarUsuariosRestritoAAdmin() throws Exception {
+        verificarRestritoAAdmin("/usuarios");
+    }
+
+    @Test
+    void buscarUsuarioPorIdRestritoAAdmin() throws Exception {
+        verificarRestritoAAdmin("/usuarios/" + usuario.getId());
+    }
+
+    @Test
+    void buscarUsuarioPorNomeRestritoAAdmin() throws Exception {
+        verificarRestritoAAdmin("/usuarios/buscar?nome=Usuario");
+    }
+
+    private void verificarRestritoAAdmin(String rota) throws Exception {
+        Usuario admin = salvarUsuario("admin.teste@wave.com", UserRole.ADMIN);
+
+        mockMvc.perform(get(rota).header(HttpHeaders.AUTHORIZATION, bearer(admin)))
+                .andExpect(status().isOk());
+        mockMvc.perform(get(rota).header(HttpHeaders.AUTHORIZATION, bearer(usuario)))
+                .andExpect(status().isForbidden());
+        mockMvc.perform(get(rota))
+                .andExpect(status().isUnauthorized());
+    }
+
     private Usuario salvarUsuario(String email, UserRole role) {
         return usuarioRepository.save(new Usuario(null, "Usuario Teste", email, passwordEncoder.encode(SENHA), role));
     }

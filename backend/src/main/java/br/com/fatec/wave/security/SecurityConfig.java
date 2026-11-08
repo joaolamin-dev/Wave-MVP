@@ -66,6 +66,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/artistas/**", "/musicas/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/artistas/**", "/musicas/**").hasRole("ADMIN")
 
+                        // Apenas ADMIN lista, busca ou consulta usuários; o próprio perfil vem de /meu-perfil
+                        .requestMatchers(HttpMethod.GET, "/usuarios/**").hasRole("ADMIN")
+
                         // Regras gerais
                         .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN") // Apenas Admin deleta qualquer coisa
                         .requestMatchers(HttpMethod.PUT, "/usuarios/**").hasAnyRole("ADMIN", "USER") // Usuário pode editar próprio perfil
