@@ -124,6 +124,23 @@ class SegurancaApiTests {
                 .andExpect(status().isUnauthorized());
     }
 
+    @Test
+    void meuPerfilComTokenResponde200ComDadosESemSenha() throws Exception {
+        mockMvc.perform(get("/meu-perfil").header(HttpHeaders.AUTHORIZATION, bearer(usuario)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(usuario.getId()))
+                .andExpect(jsonPath("$.nome").value("Usuario Teste"))
+                .andExpect(jsonPath("$.email").value(EMAIL))
+                .andExpect(jsonPath("$.role").value("USER"))
+                .andExpect(jsonPath("$.senha").doesNotExist());
+    }
+
+    @Test
+    void meuPerfilSemTokenResponde401() throws Exception {
+        mockMvc.perform(get("/meu-perfil"))
+                .andExpect(status().isUnauthorized());
+    }
+
     private Usuario salvarUsuario(String email, UserRole role) {
         return usuarioRepository.save(new Usuario(null, "Usuario Teste", email, passwordEncoder.encode(SENHA), role));
     }
