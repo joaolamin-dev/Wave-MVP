@@ -32,8 +32,6 @@ export default function Header() {
       setUsuarioLogado(response.data);
     } catch (error) {
       console.error('Erro ao buscar dados do usuário:', error);
-      // Se der erro, faz logout para limpar dados inválidos
-      handleLogout();
     } finally {
       setCarregando(false);
     }

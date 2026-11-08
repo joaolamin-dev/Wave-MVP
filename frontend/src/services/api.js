@@ -14,14 +14,29 @@ const api = axios.create({
   },
 });
 
+const rotaPublica = ({ url, method }) =>
+  url === '/login' || (url === '/usuarios' && method === 'post');
+
 // Interceptor para adicionar token automaticamente
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
-  if (token) {
+  if (token && !rotaPublica(config)) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-  
+
   return config;
+});
+
+// Em rota pública, 401 é credencial errada, não sessão expirada: quem chamou é que trata.
+api.interceptors.response.use(undefined, (error) => {
+  if (error.response?.status === 401 && !rotaPublica(error.config)) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userEmail');
+    if (window.location.pathname.toLowerCase() !== '/login') {
+      window.location.assign('/Login');
+    }
+  }
+  return Promise.reject(error);
 });
 
 export default api;
