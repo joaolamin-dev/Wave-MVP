@@ -24,6 +24,12 @@ jobs:
           cache: maven
       - run: ./mvnw -B test
 
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker build backend
+
   frontend:
     runs-on: ubuntu-latest
     defaults:
