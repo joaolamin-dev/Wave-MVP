@@ -63,6 +63,15 @@ class SegurancaApiTests {
     }
 
     @Test
+    void consoleH2DesligadoNaoFicaAcessivel() throws Exception {
+        mockMvc.perform(get("/h2-console/"))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(get("/h2-console/").header(HttpHeaders.AUTHORIZATION, bearer(usuario)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void tokenInvalidoResponde401() throws Exception {
         mockMvc.perform(get("/usuarios").header(HttpHeaders.AUTHORIZATION, TOKEN_INVALIDO))
                 .andExpect(status().isUnauthorized())

@@ -5,12 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -38,6 +40,9 @@ public class SecurityConfig {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Value("${spring.h2.console.enabled:false}")
+    private boolean h2ConsoleHabilitado;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -47,11 +52,11 @@ public class SecurityConfig {
                 // 1. PERMITE O USO DE FRAMES PARA O H2 CONSOLE
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .authorizeHttpRequests(authorize -> authorize
-                        // Rotas públicas (Login, Cadastro, Swagger e H2)
+                        // Rotas públicas (Login, Cadastro, Swagger e, só com o console ligado, H2)
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/h2-console/**").access((autenticacao, contexto) -> new AuthorizationDecision(h2ConsoleHabilitado))
                         .requestMatchers("/error").permitAll()
 
                         // Apenas ADMIN pode criar ou editar Artistas e Músicas
