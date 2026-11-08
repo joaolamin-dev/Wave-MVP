@@ -48,7 +48,7 @@ Exceção a esse padrão: `PlaylistController` fala direto com `PlaylistReposito
 Toda a autorização está centralizada nas regras de `SecurityFilterChain` em `SecurityConfig` (não há `@PreAuthorize` nos controllers): públicos são `POST /login`, `POST /usuarios`, Swagger e `/h2-console/**`; POST/PUT em `/artistas/**` e `/musicas/**` exigem ADMIN; qualquer DELETE exige ADMIN; todo o resto exige autenticação. Ao criar um endpoint novo, a regra tem que ser adicionada lá.
 
 ### Persistência e dados iniciais
-H2 em **arquivo** (`backend/wavedb.mv.db`, não versionado) com `ddl-auto=update` — o schema evolui pelas entidades, não há migrations. `DataInitializerConfig` é um `CommandLineRunner` idempotente que cria dois admins (de `app.admin1.*` / `app.admin2.*` no `application.properties`, por padrão `admin@wave.com` / `123456`), artistas, músicas e playlists de exemplo. Apagar `wavedb.mv.db` recria tudo do zero.
+H2 em **arquivo** (`backend/wavedb.mv.db`, não versionado) com `ddl-auto=update` — o schema evolui pelas entidades, não há migrations. `DataInitializerConfig` é um `CommandLineRunner` idempotente que cria um único admin (de `app.admin.*` no `application.properties`, por padrão `admin@wave.com` / `123456`), artistas, músicas e playlists de exemplo. Apagar `wavedb.mv.db` recria tudo do zero.
 
 As dependências de MySQL e PostgreSQL estão no `pom.xml` para deploy, mas o perfil ativo é H2.
 

@@ -20,17 +20,11 @@ public class DataInitializerConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(DataInitializerConfig.class);
 
-    @Value("${app.admin1.email}")
-    private String admin1Email;
+    @Value("${app.admin.email}")
+    private String adminEmail;
 
-    @Value("${app.admin1.password}")
-    private String admin1Password;
-
-    @Value("${app.admin2.email}")
-    private String admin2Email;
-
-    @Value("${app.admin2.password}")
-    private String admin2Password;
+    @Value("${app.admin.password}")
+    private String adminPassword;
 
     @Bean
     public CommandLineRunner initializeData(
@@ -42,27 +36,17 @@ public class DataInitializerConfig {
         return args -> {
             Usuario adminMaster = null;
 
-            // --- 1. INICIALIZAÇÃO DE USUÁRIOS ADMIN ---
-            if (!usuarioRepository.existsByEmail(admin1Email)) {
-                Usuario admin1 = new Usuario();
-                admin1.setNome("Admin Master");
-                admin1.setEmail(admin1Email);
-                admin1.setSenha(passwordEncoder.encode(admin1Password));
-                admin1.setRole(UserRole.ADMIN);
-                adminMaster = usuarioRepository.save(admin1);
-                logger.info(">>> Usuário Admin 1 criado com sucesso!");
+            // --- 1. INICIALIZAÇÃO DO USUÁRIO ADMIN ---
+            if (!usuarioRepository.existsByEmail(adminEmail)) {
+                Usuario admin = new Usuario();
+                admin.setNome("Admin Master");
+                admin.setEmail(adminEmail);
+                admin.setSenha(passwordEncoder.encode(adminPassword));
+                admin.setRole(UserRole.ADMIN);
+                adminMaster = usuarioRepository.save(admin);
+                logger.info(">>> Usuário Admin criado com sucesso!");
             } else {
-                adminMaster = usuarioRepository.findByEmail(admin1Email).orElse(null);
-            }
-
-            if (!usuarioRepository.existsByEmail(admin2Email)) {
-                Usuario admin2 = new Usuario();
-                admin2.setNome("Admin Suporte");
-                admin2.setEmail(admin2Email);
-                admin2.setSenha(passwordEncoder.encode(admin2Password));
-                admin2.setRole(UserRole.ADMIN);
-                usuarioRepository.save(admin2);
-                logger.info(">>> Usuário Admin 2 criado com sucesso!");
+                adminMaster = usuarioRepository.findByEmail(adminEmail).orElse(null);
             }
 
             // --- 2. POPULAR DADOS DE TESTE (ARTISTAS E MÚSICAS) ---
@@ -120,7 +104,7 @@ public class DataInitializerConfig {
 
             // --- 3. POPULAR PLAYLIST PARA O PERFIL DO ADMIN ---
             // Se o admin existir, tivermos músicas, e ele não tiver nenhuma playlist
-            if (adminMaster != null && musica1 != null && playlistRepository.findByUsuarioEmail(admin1Email).isEmpty()) {
+            if (adminMaster != null && musica1 != null && playlistRepository.findByUsuarioEmail(adminEmail).isEmpty()) {
 
                 Playlist playlistRock = new Playlist();
                 playlistRock.setNome("Clássicos do Nu Metal");
