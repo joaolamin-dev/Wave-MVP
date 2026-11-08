@@ -88,6 +88,18 @@ class ArtistaApiTests {
     }
 
     @Test
+    void buscarPorNomeNaoECapturadaPorId() throws Exception {
+        mockMvc.perform(get("/artistas/buscar-nome").param("nome", "Artista").header(HttpHeaders.AUTHORIZATION, token))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void buscarPorTipoNaoECapturadaPorId() throws Exception {
+        mockMvc.perform(get("/artistas/buscar-tipo").param("tipo", "BANDA").header(HttpHeaders.AUTHORIZATION, token))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void buscarPorIdSemTokenResponde401() throws Exception {
         mockMvc.perform(get("/artistas/" + artista.getId()))
                 .andExpect(status().isUnauthorized())

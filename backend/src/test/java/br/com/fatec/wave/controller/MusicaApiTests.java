@@ -90,6 +90,18 @@ class MusicaApiTests {
     }
 
     @Test
+    void buscarPorTituloNaoECapturadaPorId() throws Exception {
+        mockMvc.perform(get("/musicas/buscar-titulo").param("titulo", "Musica").header(HttpHeaders.AUTHORIZATION, token))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void buscarPorGeneroNaoECapturadaPorId() throws Exception {
+        mockMvc.perform(get("/musicas/buscar-genero").param("genero", "ROCK").header(HttpHeaders.AUTHORIZATION, token))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void buscarPorIdSemTokenResponde401() throws Exception {
         mockMvc.perform(get("/musicas/" + musica.getId()))
                 .andExpect(status().isUnauthorized())
