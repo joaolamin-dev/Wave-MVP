@@ -1,0 +1,13 @@
+target/
+wavedb*
+.git
+.gitignore
+.gitattributes
+.idea
+*.iml
+.vscode
+.env*
+*.log
+HELP.md
+Dockerfile
+.dockerignore
