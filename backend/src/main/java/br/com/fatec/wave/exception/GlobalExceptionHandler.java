@@ -2,6 +2,7 @@ package br.com.fatec.wave.exception;
 
 import br.com.fatec.wave.dto.ErroResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -63,6 +64,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .map(erro -> erro.getField() + ": " + erro.getDefaultMessage())
                 .sorted()
                 .collect(Collectors.joining("; "));
+        return handleExceptionInternal(ex, ProblemDetail.forStatusAndDetail(status, mensagem), headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        String mensagem = "Parâmetro '" + ex.getPropertyName() + "' inválido";
         return handleExceptionInternal(ex, ProblemDetail.forStatusAndDetail(status, mensagem), headers, status, request);
     }
 

@@ -44,6 +44,12 @@ public class MusicaController {
         return ResponseEntity.ok(service.buscarPorGenero(genero, pageable));
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Buscar música por ID", description = "Busca uma música específica através do seu identificador único.")
+    public ResponseEntity<MusicaResponseDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getMusicaById(id));
+    }
+
     @PostMapping
     @CacheEvict(value = "listaMusicas", allEntries = true)
     @Operation(summary = "Cadastrar uma música")

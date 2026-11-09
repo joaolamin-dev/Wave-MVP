@@ -44,6 +44,12 @@ public class ArtistaController {
         return ResponseEntity.ok(service.buscarPorTipo(tipo, pageable));
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Buscar artista por ID", description = "Busca um artista específico através do seu identificador único.")
+    public ResponseEntity<ArtistaResponseDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getArtistaById(id));
+    }
+
     @PostMapping
     @CacheEvict(value = "listaArtistas", allEntries = true)
     @Operation(summary = "Criar um novo artista")
